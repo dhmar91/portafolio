@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Portfolio de David</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --bg: #05060a;
+      --bg-card: #111320;
+      --accent: #4f8cff;
+      --accent-soft: rgba(79, 140, 255, 0.15);
+      --text: #f5f5f7;
+      --text-soft: #a0a3b1;
+      --border: #1f2233;
+      --radius: 14px;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: radial-gradient(circle at top, #15182a 0, #05060a 55%);
+      color: var(--text);
+      padding: 32px 16px 48px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    header h1 {
+      font-size: 2.1rem;
+    }
+
+    .page-counter {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      font-size: 0.85rem;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .project-card {
+      background: linear-gradient(145deg, #0b0d18, #05060a);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 18px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at top left, rgba(79, 140, 255, 0.18), transparent 55%);
+      opacity: 0.7;
+    }
+
+    .project-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      font-size: 0.75rem;
+      margin-right: 6px;
+    }
+
+    .project-description {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      margin-bottom: 14px;
+    }
+
+    .project-video {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 10px;
+      border: 1px solid #22263a;
+      margin-bottom: 14px;
+    }
+
+    .project-video iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .demo-label {
+      color: var(--text-soft);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <header>
+      <h1>Proyectos de David</h1>
+      <div class="page-counter">
+        Visitas a la página: <span id="page-views">0</span>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- PROYECTO SOLO DEMO -->
+      <div class="project-card" data-id="gestion">
+        <div class="project-title">Gestión v1 – Solo visualización</div>
+
+        <div>
+          <span class="tag">AutoIT</span>
+          <span class="tag">2024-2025</span>
+        </div>
+
+        <div class="project-description">
+          Programa de gestión para planificar vacaciones y ausencias, asignación de capacidades y secciones además de informes en pdf y filtros.
+        </div>
+
+        <!-- ⭐ VIDEO DE YOUTUBE FUNCIONANDO -->
+        <div class="project-video">
+          <iframe 
+            src="https://www.youtube.com/embed/-NDE05t1GMA"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
+
+        <div class="footer">
+          <div>Visualizaciones: <span class="downloads">0</span></div>
+          <span class="demo-label">Solo demo</span>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <script>
+    const API = "http://37.59.47.141";
+
+    function contadorPagina() {
+      fetch(`${API}/INCCONTADOR?pagina`)
+        .then(() => fetch(`${API}/TOTALCONTADOR?pagina`))
+        .then(r => r.text())
+        .then(num => {
+          document.getElementById("page-views").textContent = num.trim();
+        });
+    }
+
+    function cargarContadores() {
+      document.querySelectorAll(".project-card").forEach(card => {
+        const id = card.dataset.id;
+        const span = card.querySelector(".downloads");
+
+        fetch(`${API}/TOTALCONTADOR?${id}`)
+          .then(r => r.text())
+          .then(num => span.textContent = num.trim());
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      contadorPagina();
+      cargarContadores();
+    });
+  </script>
+
+</body>
+</html>
